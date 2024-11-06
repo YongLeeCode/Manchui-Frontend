@@ -9,9 +9,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import instance from '@/apis/api';
 import { getUserInfo } from '@/apis/userApi';
-import Carousel from '@/components/Carousel';
+import Carousel from '@/components/loginLogout/Carousel';
 import Input from '@/components/shared/Input';
 import { Toast } from '@/components/shared/Toast';
+import { formatDate } from '@/libs/formatDate';
 import { userStore } from '@/store/userStore';
 
 /**
@@ -45,14 +46,21 @@ export default function LoginPage() {
       login();
       success = true;
     } catch (err: any) {
+      Toast('error', err.res?.data.message);
       console.log(err);
-      Toast('error', '이메일 또는 비밀번호가 일치하지 않습니다.');
     }
     if (success) {
       try {
         const userData = await getUserInfo();
+        console.log(userData.res);
         if (userData.res) {
-          userUpdate(userData.res);
+          userUpdate({
+            email: userData.res?.email || '',
+            id: userData.res?.id || '',
+            image: userData.res?.image || '/images/together-findpage-large.png',
+            name: userData.res?.name || '',
+            createdAt: formatDate(userData.res?.createdAt) || '',
+          });
         }
         void router.push('/');
       } catch (error) {
