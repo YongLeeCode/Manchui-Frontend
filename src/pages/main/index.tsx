@@ -7,15 +7,22 @@ import MainCardSection from '@/components/main/MainCardSection';
 import MainCarousel from '@/components/main/MainCarousel';
 import MainContainer from '@/components/main/MainContainer';
 import RootLayout from '@/components/shared/RootLayout';
+import { SEO } from '@/components/shared/SEO';
 import PAGE_SIZE_BY_DEVICE from '@/constants/pageSize';
 import useDeviceState from '@/hooks/useDeviceState';
 import useGetGatheringData from '@/hooks/useGetGatheringData';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import useFilterStore from '@/store/useFilterStore';
 import { userStore } from '@/store/userStore';
-import { dehydrate, QueryClient, useQueryClient } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary, QueryClient, useQueryClient } from '@tanstack/react-query';
 
-export default function MainPage() {
+interface MainPageProps {
+  seo: {
+    title: string;
+  };
+}
+
+export default function MainPage({ seo }: MainPageProps) {
   const { keyword, location, category, closeDate, dateStart, dateEnd } = useFilterStore();
 
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -62,15 +69,18 @@ export default function MainPage() {
 
   return (
     <>
-      <MainCarousel isError={isError} />
-      <RootLayout>
-        <MainContainer>
-          <HeaderSection />
-          <FilterSection />
-          <MainCardSection isError={isError} isLoading={isLoading} pageSize={pageSize} mainData={mainDataList} />
-          {!isError && <div ref={sentinelRef} className="h-20 w-full flex-shrink-0 opacity-0" />}
-        </MainContainer>
-      </RootLayout>
+      <SEO title={seo.title} />
+      <HydrationBoundary>
+        <MainCarousel isError={isError} />
+        <RootLayout>
+          <MainContainer>
+            <HeaderSection />
+            <FilterSection />
+            <MainCardSection isError={isError} isLoading={isLoading} pageSize={pageSize} mainData={mainDataList} />
+            {!isError && <div ref={sentinelRef} className="h-20 w-full flex-shrink-0 opacity-0" />}
+          </MainContainer>
+        </RootLayout>
+      </HydrationBoundary>
     </>
   );
 }
@@ -86,6 +96,9 @@ export const getServerSideProps = async () => {
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
+      seo: {
+        title: '만취 - 랜딩 페이지',
+      },
     },
   };
 };

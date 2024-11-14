@@ -8,15 +8,22 @@ import BookmarkFilter from '@/components/bookmark/BookmarkFilter';
 import BookmarkHeader from '@/components/bookmark/BookmarkHeader';
 import PaginationBtn from '@/components/shared/PaginationBtn';
 import RootLayout from '@/components/shared/RootLayout';
+import { SEO } from '@/components/shared/SEO';
 import PAGE_SIZE_BY_DEVICE from '@/constants/pageSize';
 import useDeviceState from '@/hooks/useDeviceState';
 import useGetBookmarkData from '@/hooks/useGetBookmarkData';
 import useFilterStore from '@/store/useFilterStore';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 
 import Error from 'public/lottie/error.json';
 
-export default function BookmarkPage() {
+interface BookmarkProps {
+  seo: {
+    title: string;
+  };
+}
+
+export default function BookmarkPage({ seo }: BookmarkProps) {
   const { page, keyword, location, category, closeDate, dateEnd, dateStart } = useFilterStore();
 
   const deviceState = useDeviceState();
@@ -40,23 +47,26 @@ export default function BookmarkPage() {
 
   return (
     <>
-      {isError ? (
-        <div className="mt-[60px] h-bookmark-banner">
-          <Lottie animationData={Error} className="size-full border-b-2 border-cardBorder bg-background" />
-        </div>
-      ) : (
-        <BookmarkBanner isError={isError} />
-      )}
-      <RootLayout>
-        <BookmarkContainer>
-          <BookmarkHeader data={bookmark?.data} />
-          <div className="min-h-screen w-full bg-white">
-            <BookmarkFilter />
-            <BookmarkCardList data={bookmark?.data} isLoading={isLoading} isError={isError} skeletonCount={PAGE_SIZE_BY_DEVICE.BOOKMARK[deviceState]} />
-            {!isLoading && !isError && bookmark?.data.gatheringCount !== 0 && <PaginationBtn page={data?.page ?? 0} totalPage={data?.totalPage ?? 0} />}
+      <SEO title={seo.title} />
+      <HydrationBoundary>
+        {isError ? (
+          <div className="mt-[60px] h-bookmark-banner">
+            <Lottie animationData={Error} className="size-full border-b-2 border-cardBorder bg-background" />
           </div>
-        </BookmarkContainer>
-      </RootLayout>
+        ) : (
+          <BookmarkBanner isError={isError} />
+        )}
+        <RootLayout>
+          <BookmarkContainer>
+            <BookmarkHeader data={bookmark?.data} />
+            <div className="min-h-screen w-full bg-white">
+              <BookmarkFilter />
+              <BookmarkCardList data={bookmark?.data} isLoading={isLoading} isError={isError} skeletonCount={PAGE_SIZE_BY_DEVICE.BOOKMARK[deviceState]} />
+              {!isLoading && !isError && bookmark?.data.gatheringCount !== 0 && <PaginationBtn page={data?.page ?? 0} totalPage={data?.totalPage ?? 0} />}
+            </div>
+          </BookmarkContainer>
+        </RootLayout>
+      </HydrationBoundary>
     </>
   );
 }
@@ -72,6 +82,9 @@ export const getServerSideProps = async () => {
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
+      seo: {
+        title: '만취 - 찜한 모임 페이지',
+      },
     },
   };
 };
