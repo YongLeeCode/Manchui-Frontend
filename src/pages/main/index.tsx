@@ -5,6 +5,7 @@ import FilterSection from '@/components/main/FilterSection';
 import HeaderSection from '@/components/main/HeaderSection';
 import MainCardSection from '@/components/main/MainCardSection';
 import MainContainer from '@/components/main/MainContainer';
+import SpeedDial from '@/components/main/SpeedDial';
 import RootLayout from '@/components/shared/RootLayout';
 import { SEO } from '@/components/shared/SEO';
 import PAGE_SIZE_BY_DEVICE from '@/constants/pageSize';
@@ -95,6 +96,7 @@ export default function MainPage({ seo, dehydratedState }: MainPageProps) {
             <FilterSection />
             <MainCardSection isError={isError} isLoading={isLoading} pageSize={pageSize} mainData={mainDataList} />
             {!isError && <div ref={sentinelRef} className="h-20 w-full flex-shrink-0 opacity-0" />}
+            <SpeedDial />
           </MainContainer>
         </RootLayout>
       </HydrationBoundary>
