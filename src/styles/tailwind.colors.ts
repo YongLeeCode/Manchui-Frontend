@@ -6,6 +6,9 @@ const colors = {
   background: '#F9FAFB',
   full: '#F5BF08',
   cardBorder: '#f3f4f6',
+  front: '#fb9b9b',
+  backend: '#85c8f5',
+  design: '#cdf86f',
   primary: {
     50: '#FEF5D7',
     100: '#FCE9A6',
@@ -50,9 +53,9 @@ const colors = {
     400: '#8198A1',
     500: '#667F89',
     600: '#51646C',
-    700: '#3B494F',
-    800: '#262F33',
-    900: '#0F1314',
+    700: '#222222',
+    800: '#0F1314',
+    900: '#080808',
   },
 };
 
