@@ -23,7 +23,7 @@ export default function GNB() {
   const userinfo = userStore((state) => state.user);
   const updateUser = userStore((state) => state.updateUser);
 
-  const { data, isPending, isError, error } = useQuery({
+  const { data } = useQuery({
     queryKey: ['queryUserInfo'],
     queryFn: getUserInfo,
     staleTime: 1000 * 60 * 5,
