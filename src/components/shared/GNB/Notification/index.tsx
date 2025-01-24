@@ -28,9 +28,7 @@ export default function Notification() {
 
   useEffect(
     function handleScrollFetch() {
-      if ((isIntersecting || isIntersectingInMobile) && hasNextPage) {
-        void fetchNextPage();
-      }
+      if ((isIntersecting || isIntersectingInMobile) && hasNextPage) void fetchNextPage();
     },
     [isIntersecting, hasNextPage, isIntersectingInMobile, fetchNextPage],
   );
